@@ -37,6 +37,7 @@ func grepLines(scanner *bufio.Scanner , pattern string, addon string) ([]string,
 				if strings.Contains(line ,pattern ){
 					matches = append(matches , line)
 				}
+
 			case "-c":
 				line := scanner.Text()
 				if strings.Contains(line, pattern){
@@ -51,6 +52,10 @@ func grepLines(scanner *bufio.Scanner , pattern string, addon string) ([]string,
 					matches=append(matches, pattern)
 					fmt.Printf("so we found the word in line = %d \n", linecount)
 				}
+			case "-r":
+
+
+				
 			default:
 				line := scanner.Text()
 				if strings.Contains(line, pattern){
