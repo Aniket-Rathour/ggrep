@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
+	"strconv"
+
 	//"fmt"
 	"log"
 	"os"
@@ -41,7 +43,7 @@ func grepLines(dir fs.FS, pattern string, addon string , name string) ([]string,
 	var matches []string
 
 	counter := 0
-	linecount := 0
+	linecount := 1
 	for scanner.Scan() {
 		switch addon {
 			case "-i":
@@ -50,6 +52,7 @@ func grepLines(dir fs.FS, pattern string, addon string , name string) ([]string,
 				pattern = strings.ToLower(pattern)
 				if strings.Contains(lineLower ,pattern ){
 					matches = append(matches , line)
+					counter++
 				}
 
 			case "-c":
@@ -61,16 +64,20 @@ func grepLines(dir fs.FS, pattern string, addon string , name string) ([]string,
 				fmt.Printf("%d" , counter)
 
 			case "-n":
+				//println("hiii i am from -n ")
 				line:=scanner.Text()
 				if strings.Contains(line, pattern){
-					matches=append(matches, pattern)
-					fmt.Printf("so we found the word in line = %d \n", linecount)
+					toadd :=strconv.Itoa(linecount)
+					matches=append(matches, toadd)
+					//fmt.Printf("so we found the word in line = %q \n", matches)
+					counter++
 				}
 			case "-r":
 
 
 
 			default:
+				//println("hii i am from defult")
 				line := scanner.Text()
 				if strings.Contains(line, pattern){
 					matches = append(matches , line )
