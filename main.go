@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"io/fs"
 	//"fmt"
 	"log"
 	"os"
@@ -17,24 +19,36 @@ func main (){
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
-	Scanner := bufio.NewScanner(file);
+	defer func() {
+        if err := file.Close(); err != nil {
+            log.Printf("error closing file: %v\n", err)
+        }
+    }()
+	//Scanner := bufio.NewScanner(file);
 	//pattern := "5"
-	result , count := grepLines(Scanner , os.Args[1] , os.Args[3])
+	result , count := grepLines(os.DirFS("aniket"), os.Args[1] , os.Args[3] , "aniket.txt")
 	fmt.Print(result ,count)
 }
 
-func grepLines(scanner *bufio.Scanner , pattern string, addon string) ([]string, int){
+func grepLines(dir fs.FS, pattern string, addon string , name string) ([]string, int){
+	file , err := fs.ReadFile(dir , name)
+	if err != nil {
+		return []string{"error in reading file "} , 0
+	}
+
+	reader := bytes.NewReader(file)
+	scanner := bufio.NewScanner(reader)
 	var matches []string
+
 	counter := 0
 	linecount := 0
 	for scanner.Scan() {
 		switch addon {
 			case "-i":
 				line:= scanner.Text()
-				line = strings.ToLower(line)
+				lineLower := strings.ToLower(line)
 				pattern = strings.ToLower(pattern)
-				if strings.Contains(line ,pattern ){
+				if strings.Contains(lineLower ,pattern ){
 					matches = append(matches , line)
 				}
 
@@ -55,11 +69,12 @@ func grepLines(scanner *bufio.Scanner , pattern string, addon string) ([]string,
 			case "-r":
 
 
-				
+
 			default:
 				line := scanner.Text()
 				if strings.Contains(line, pattern){
 					matches = append(matches , line )
+					counter++
 					
 				}
 				
