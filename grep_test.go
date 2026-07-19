@@ -107,25 +107,59 @@ func CheckError(t testing.TB ,lines []string ,count int , wantline []string , wa
 }
 
 func BenchmarkGrep(b *testing.B) {
-	b.ResetTimer()
 	fakedir := fstest.MapFS{
 		"aniket.txt": {Data : []byte("hiii my name is aniket\n i love bikes\ni am capatial Aniket\ni wouldlove if you can join me \naniket")},
 		"aniket2.txt": {Data : []byte("hiii my name is aniket ")},
 		"dir1/aniket.txt": {Data : []byte("hiii my name is aniket ")},
 		"dir2/aniket.txt": {Data : []byte("hiii my name is aniket ")},
 	}
-	//name := "test for -i case"
-	pattern := "aniket"
-	addon := "dafault"
-	file := "aniket.txt"
-	//wantLines := []string{"hiii my name is aniket" , "aniket"}
-	//wantCount:= 2
-	path:= "aniket.txt"
 
-	for b.Loop(){
-		test , count := grepLines(fakedir ,pattern , addon ,file, path )
-		if test == nil || count ==0 {
+	benchmarks := []struct {
+		name    string
+		pattern string
+		addon   string
+		file    string
+		path    string
+	}{
+		{
+			name:    "default",
+			pattern: "aniket",
+			addon:   "default",
+			file:    "aniket.txt",
+			path:    "aniket.txt",
+		},
+		{
+			name:    "-n flag",
+			pattern: "aniket",
+			addon:   "-n",
+			file:    "aniket.txt",
+			path:    "aniket.txt",
+		},
+		{
+			name:    "-i flag",
+			pattern: "aniket",
+			addon:   "-i",
+			file:    "aniket.txt",
+			path:    "aniket.txt",
+		},
+		{
+			name:    "-r flag",
+			pattern: "aniket",
+			addon:   "-r",
+			file:    "",
+			path:    ".",
+		},
+	}
 
-		}
+	for _, bm := range benchmarks {
+		b.Run(bm.name, func(b *testing.B) {
+			b.ResetTimer()
+			for b.Loop() {
+				test, count := grepLines(fakedir, bm.pattern, bm.addon, bm.file, bm.path)
+				if test == nil || count == 0 {
+					println("not good")
+				}
+			}
+		})
 	}
 }

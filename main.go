@@ -54,8 +54,7 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 				return []string{"there was a error"} , 0
 				} 
 				
-				reader := bytes.NewReader(content)
-				scanner := bufio.NewScanner(reader)
+				scanner := bufio.NewScanner(bytes.NewReader(content))
 				for scanner.Scan() {
 					line := scanner.Text()
 					if strings.Contains(line, pattern){
@@ -74,8 +73,8 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 		return []string{"error in reading file "} , 0
 	}
 
-	reader := bytes.NewReader(mainfile)
-	scanner := bufio.NewScanner(reader)
+	//reader := 
+	scanner := bufio.NewScanner(bytes.NewReader(mainfile))
 	var matches []string
 
 	counter := 0
@@ -109,7 +108,6 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 				}
 
 			default:
-				//println("hii i am from defult")
 				line := scanner.Text()
 				if strings.Contains(line, pattern){
 					matches = append(matches , line )
