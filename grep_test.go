@@ -58,6 +58,24 @@ func TestCommands( t *testing.T){
 			wantCount: 5,
 			path: ".",
 		},
+		{
+			name : "test for -n case",
+			pattern : "name",
+			addon : "-r",
+			file : "",
+			wantLines : []string{"hiii my name is aniket", "hiii my name is aniket " , "hiii my name is aniket " , "hiii my name is aniket "},
+			wantCount: 4,
+			path: ".",
+		},
+		{
+			name : "test for -n case",
+			pattern : "bikes",
+			addon : "-r",
+			file : "",
+			wantLines : []string{" i love bikes"},
+			wantCount: 1,
+			path: ".",
+		},
 		
 
 	}
