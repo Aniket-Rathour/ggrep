@@ -6,10 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path"
-	//"path/filepath"
 	"strconv"
-
-	//"fmt"
 	"log"
 	"os"
 	"strings"
@@ -28,10 +25,7 @@ func main (){
             log.Printf("error closing file: %v\n", err)
         }
     }()
-	//Scanner := bufio.NewScanner(file);
-	//pattern := "5"
-	//result , count := grepLines(os.DirFS("aniket"), os.Args[1] , os.Args[3] , "aniket.txt" )
-	//fmt.Print(result ,count)
+	
 }
 
 func grepLines(dir fs.FS, pattern string, addon string , name string , impPath string) ([]string, int){
@@ -47,14 +41,13 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 		for _, files := range entries {
 			if files.IsDir(){
 				newPath := path.Join(impPath,files.Name())
-				//path = append(path , )
+				
 				final1 , count2 := grepLines(dir , pattern , addon , name , newPath)
 				final = append(final, final1...)
 				count += count2
 
 			}else{
-				//reader := bytes.NewBuffer(files)
-				//reader := bufio.Scanner(files)
+			
 				newPath :=path.Join(impPath,files.Name())
 				content ,err  := fs.ReadFile(dir , newPath)
 				if err!= nil {
@@ -75,17 +68,11 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 
 		}
 		return final, count
-	}
-
-		//final = append(final, )
-		
-	
-
+	}	
 	mainfile , err := fs.ReadFile(dir , name)
 	if err != nil {
 		return []string{"error in reading file "} , 0
 	}
-
 
 	reader := bytes.NewReader(mainfile)
 	scanner := bufio.NewScanner(reader)
@@ -113,17 +100,13 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 				fmt.Printf("%d" , counter)
 
 			case "-n":
-				//println("hiii i am from -n ")
 				line:=scanner.Text()
 				if strings.Contains(line, pattern){
 					toadd :=strconv.Itoa(linecount)
 					matches=append(matches, toadd)
-					//fmt.Printf("so we found the word in line = %q \n", matches)
+					
 					counter++
 				}
-			case "-r":
-
-
 
 			default:
 				//println("hii i am from defult")
@@ -132,11 +115,9 @@ func grepLines(dir fs.FS, pattern string, addon string , name string , impPath s
 					matches = append(matches , line )
 					counter++
 					
-				}
-				
+				}	
 		}
 		linecount++
-		
 	}
 	return matches,counter
 }
