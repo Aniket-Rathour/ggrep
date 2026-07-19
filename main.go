@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
+	"path"
+	//"path/filepath"
 	"strconv"
 
 	//"fmt"
@@ -28,17 +30,64 @@ func main (){
     }()
 	//Scanner := bufio.NewScanner(file);
 	//pattern := "5"
-	result , count := grepLines(os.DirFS("aniket"), os.Args[1] , os.Args[3] , "aniket.txt")
-	fmt.Print(result ,count)
+	//result , count := grepLines(os.DirFS("aniket"), os.Args[1] , os.Args[3] , "aniket.txt" )
+	//fmt.Print(result ,count)
 }
 
-func grepLines(dir fs.FS, pattern string, addon string , name string) ([]string, int){
-	file , err := fs.ReadFile(dir , name)
+func grepLines(dir fs.FS, pattern string, addon string , name string , impPath string) ([]string, int){
+	
+	if addon == "-r" {
+		var final []string
+		var count int
+		entries , err :=fs.ReadDir(dir , impPath )
+		if err!= nil {
+			return []string{"there was a error"} , 0
+		} 
+		
+		for _, files := range entries {
+			if files.IsDir(){
+				newPath := path.Join(impPath,files.Name())
+				//path = append(path , )
+				final1 , count2 := grepLines(dir , pattern , addon , name , newPath)
+				final = append(final, final1...)
+				count += count2
+
+			}else{
+				//reader := bytes.NewBuffer(files)
+				//reader := bufio.Scanner(files)
+				newPath :=path.Join(impPath,files.Name())
+				content ,err  := fs.ReadFile(dir , newPath)
+				if err!= nil {
+				return []string{"there was a error"} , 0
+				} 
+				
+				reader := bytes.NewReader(content)
+				scanner := bufio.NewScanner(reader)
+				for scanner.Scan() {
+					line := scanner.Text()
+					if strings.Contains(line, pattern){
+						final = append(final , line )
+						count++
+					}
+					
+				}
+			}
+
+		}
+		return final, count
+	}
+
+		//final = append(final, )
+		
+	
+
+	mainfile , err := fs.ReadFile(dir , name)
 	if err != nil {
 		return []string{"error in reading file "} , 0
 	}
 
-	reader := bytes.NewReader(file)
+
+	reader := bytes.NewReader(mainfile)
 	scanner := bufio.NewScanner(reader)
 	var matches []string
 
@@ -58,7 +107,7 @@ func grepLines(dir fs.FS, pattern string, addon string , name string) ([]string,
 			case "-c":
 				line := scanner.Text()
 				if strings.Contains(line, pattern){
-					matches = append(matches , line )
+					matches = append(matches , line)
 					counter++
 				}
 				fmt.Printf("%d" , counter)
