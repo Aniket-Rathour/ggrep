@@ -27,4 +27,5 @@ THIS MAY LOOK VERY SLOW BUT IS VERY NEAR TO REAL GREP CONFIGRATIONS
 | ripgrep (rg) | ⏱️ ~100 - 150 ns |
 
 So at the end its a great start
+'''
 lets just stay alive and look were it goes
